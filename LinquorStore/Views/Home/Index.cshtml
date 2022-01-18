@@ -1,0 +1,124 @@
+﻿@model IEnumerable<LinquorStore.Models.SanPham>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<main role="main" class="pb-3 baby-sp" style="background-color: #fff;">
+
+    <ul class="nav justify-content-center navsp " style="height: 145px;">
+
+        <li class="nav-item " style="margin-bottom: auto; margin-top: auto;">
+            <span>
+                @ViewBag.loai
+            </span>
+        </li>
+
+    </ul>
+    <div class="container">
+        <div class="card-group product">
+            <div class="card mt-3" style="padding: 0px; border:none;">
+                <div class="card-body bg-white ">
+                    <div class="card-deck ">
+                        @foreach (var item in Model)
+                        {
+                            <div class=" col-xl-3 col-lg-3 col-md-4 col-sm-6" style="margin-bottom: 40px;">
+                                <div class=" card list-book rounded">
+                                    <div class="hover-opacity">
+                                        <div class="cart-op">
+                                            <a asp-route-id="@item.Id">
+                                                <img src="~/@item.HinhAnhBia" width="20" class="card-img-top" alt="...">
+                                            </a>
+                                        </div>
+                                        <div class="card-footer cart-bo text-center button-buy ">
+                                            <a class="btn btn-productcart " asp-action="AddToCart" asp-route-id="@item.Id">
+                                                <i class="fa fa-shopping-cart"></i>
+                                            </a>
+                                            <a class="btn btn-productcart " asp-action="Details" asp-route-id="@item.Id">
+                                                <i class="fa fa-info-circle"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="card-body al">
+                                        <h5 class="card-title text-center">@item.TenSanPham</h5>
+                                        <p class="card-text text-center text-danger">@String.Format("{0:N0}", item.DonGia) VNĐ</p>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        }
+
+                    </div>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination  justify-content-center">
+                            @{
+                                int numberPage = ViewBag.numberPage;
+                                int pageCurrent = ViewBag.pageCurrent;
+                                int offset = 2;//number display page
+
+
+                                //config FirstLink
+                                if (pageCurrent > 1)
+                                {
+                                    int prevPage = pageCurrent - 1;
+                                    var PrevLink = new Dictionary<string, string> { { "page", prevPage.ToString() } };
+                                    <li class="page-yield"><a class="page-tag" asp-controller="Home" asp-action="Index" asp-all-route-data="PrevLink" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Trước</a></li>
+                                }
+
+                                int from = pageCurrent - offset;
+                                int to = pageCurrent + offset;
+                                if (from <= 0)
+                                {
+                                    from = 1;
+                                    to = offset * 2;
+                                }
+
+
+                                if (to > numberPage)
+                                {
+                                    to = numberPage;
+                                }
+
+                                int i;
+                                for (i = from; i <= to; i++)
+                                {
+                                    var parms = new Dictionary<string, string>
+                                                                                                                            {
+                        { "page",i.ToString()}
+                    };
+                                    if (pageCurrent == i)
+                                    {
+                                        <li class="page-yield active "><a class="page-tag" asp-controller="Home" asp-action="Index" asp-all-route-data="parms" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@i</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li class="page-yield  "><a class="page-tag" asp-controller="Home" asp-action="Index" asp-all-route-data="parms" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@i</a></li>
+                                    }
+
+                                }
+                                if (pageCurrent < numberPage)
+                                {
+                                    <li><a>...</a></li>
+                                    int nextPage = pageCurrent + 1;
+                                    var NextLink = new Dictionary<string, string> { { "page", nextPage.ToString() } };
+                                    <li class="page-yield"><a class="page-tag" asp-controller="Home" asp-action="Index" asp-all-route-data="NextLink" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Tiếp</a></li>
+                                }
+                                if (pageCurrent < numberPage - (to / 2))
+                                {
+
+                                    var LastLink = new Dictionary<string, string> { { "page", numberPage.ToString() } };
+                                    <li class="page-yield"><a class="page-tag" asp-controller="Home" asp-action="Index" asp-all-route-data="LastLink" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Trang cuối</a></li>
+                                }
+
+
+                            }
+                        </ul>
+
+                    </nav>
+                </div>
+                <div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

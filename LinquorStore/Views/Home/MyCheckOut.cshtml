@@ -1,0 +1,118 @@
+﻿@using Microsoft.AspNetCore.Http
+@model IEnumerable<LinquorStore.Models.MyCheckOut>
+@{
+
+    Layout = "~/Views/Shared/_Layoutmain.cshtml";
+
+}
+<div class="card mt-3">
+    <br />
+    <br />
+    <br />
+    <br />
+    <h3 class="card-header" style="background-color: white; border: none; color:#ff0000;">
+        Đơn hàng của   @Context.Session.GetString("_HotenKhachHang").ToString()
+    </h3>
+    <div class="row">
+        <a class="bg-primary ml-2 text-white" style="width:180px;line-height:40px;text-align:center;">
+            Đơn hàng mới <span class="badge badge-light">@Model.Where(m => m.TinhTrang == 0).ToList().Count()</span>
+        </a>
+
+        <a class="bg-danger ml-2 text-white" style="width:180px;line-height:40px;text-align:center;">
+            Đơn hàng đã hủy <span class="badge badge-light">@Model.Where(m => m.TinhTrang == 2).ToList().Count()</span>
+        </a>
+
+        <a class="bg-success ml-2 text-white" style="width:180px;line-height:40px;text-align:center;">
+            Đã đóng gói <span class="badge badge-light">@Model.Where(m => m.TinhTrang == 3).ToList().Count()</span>
+        </a>
+
+        <a class="bg-info ml-2 text-white" style="width:180px;line-height:40px;text-align:center;">
+            Đơn hàng đã nhận <span class="badge badge-light">@Model.Where(m => m.TinhTrang == 9).ToList().Count()</span>
+        </a>
+    </div>
+    <div class="card-body" style="text-align:center; width:1130px">
+        <table class="table table-bordered table-hover table-sm">
+            <tr style="background:#808080">
+                <th width="5%">STT</th>
+                <th>Hình ảnh</th>
+                <th>Sản phẩm</th>
+                <th width="10%">Số lượng</th>
+                @*<th>Đơn giá</th>*@
+                <th>Thành tiền</th>
+                <th>Tình Trạng</th>
+                <th>Thời gian đặt hàng</th>
+                <th>Huỷ đơn</th>
+                @*<th>Dự kiến ngày nhận</th>*@
+            </tr>
+
+            @{int stt = 1;}
+            @foreach (var item in Model)
+
+            {
+        <tr>
+            <td>@stt</td>
+            <td><img src="~/@item.HinhAnhBia" width="50" /></td>
+            <td>@item.TenSanPham</td>
+            <td>@item.SoLuong</td>
+            @*<td class="card-text text-center">@String.Format("{0:N0}", item.DonGia)</td>*@
+            <td class="text-right">@String.Format("{0:N0}", item.SoLuong * item.DonGia)</td>
+            <td style="text-align:center">
+                @if (item.TinhTrang == 0)
+                {
+                    <span class="badge badge-info shadow" style="line-height:25px;width:150px;text-align:center;font-size:15px;">Đơn hàng mới</span>
+                }
+                else if (item.TinhTrang == 1)
+                {
+                    <span class="badge badge-success shadow" style="line-height:25px;width:150px;text-align:center;font-size:15px;">Đang xác nhận</span>
+                }
+                else if (item.TinhTrang == 2)
+                {
+                    <span class="badge badge-danger shadow" style="line-height:25px;width:150px;text-align:center;font-size:15px;">Đã hủy</span>
+                }
+                else if (item.TinhTrang == 3)
+                {
+                    <span class="badge badge-warning shadow" style="line-height:25px;width:150px;text-align:center;font-size:15px;">Đang đóng gói</span>
+                }
+                else if (item.TinhTrang == 4)
+                {
+                    <span class="badge badge-warning shadow" style="line-height:25px;width:150px;text-align:center;font-size:15px;">Đang gửi vận chuyển</span>
+                }
+                else if (item.TinhTrang == 5)
+                {
+                    <span class="badge badge-primary shadow" style="line-height:25px;width:150px;text-align:center;font-size:15px;">Đang chuyển</span>
+                }
+                else if (item.TinhTrang == 6)
+                {
+                    <span class="badge badge-danger shadow" style="line-height:25px;width:150px;text-align:center;font-size:15px;">Thất bại</span>
+                }
+                else if (item.TinhTrang == 7)
+                {
+                    <span class="badge badge-warning shadow" style="line-height:25px;width:150px;text-align:center;font-size:15px;">Đang chuyển hoàn</span>
+                }
+                else if (item.TinhTrang == 8)
+                {
+                    <span class="badge badge-success shadow" style="line-height:25px;width:150px;text-align:center;font-size:15px;">Đã chuyển hoàn</span>
+                }
+                else
+                {
+                    <span class="badge badge-primary shadow" style="line-height:25px;width:150px;text-align:center;font-size:15px;">Thành công</span>
+                }
+            </td>
+
+            <td>@item.NgayDatHang</td>
+            <td>
+                @if (item.TinhTrang == 0)
+                {
+                    <a class="text-left" asp-controller="Home" asp-route-id="@item.ID" asp-action="CancelOrder"><i class="fa fa-trash btn btn-outline-danger"></i></a>
+                }
+            </td>
+            @*<td>@item.DuKienNgayNhan</td>*@
+        </tr>
+                stt++;
+            }
+
+
+        </table>
+
+    </div>
+</div>
